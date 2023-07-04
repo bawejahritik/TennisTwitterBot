@@ -39,7 +39,7 @@ url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/" + currentDate
 querystring = {"page":"1"}
 
 headers = {
-	"X-RapidAPI-Key": os.environ["rapidapikey"],
+	"X-RapidAPI-Key": os.environ["rapid_api_key"],
 	"X-RapidAPI-Host": "sportscore1.p.rapidapi.com"
 }
 
