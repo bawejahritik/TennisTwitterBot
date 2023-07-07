@@ -2,11 +2,14 @@ import requests
 from datetime import datetime, timezone
 import tweepy
 import os
+import keys
 
 def remove(string):
     string = string.replace(" ", "")
     string = string.replace("&", "And")
     string = string.replace("-", "")
+    string = string.replace(",", "")
+    string = string.replace("'", "")
     return string
 
 client = tweepy.Client(bearer_token=os.environ["bearer_token"],
@@ -19,7 +22,8 @@ client = tweepy.Client(bearer_token=os.environ["bearer_token"],
 #                        consumer_key=keys.api_key,
 #                        consumer_secret=keys.api_secret,
 #                        access_token=keys.access_token,
-#                        access_token_secret=keys.access_token_secret)
+#                        access_token_secret=keys.access_token_secret,
+#                        wait_on_rate_limit=True)
 
 auth = tweepy.OAuthHandler(os.environ["api_key"], 
                            os.environ["api_key_secret"], 
@@ -30,6 +34,7 @@ auth = tweepy.OAuthHandler(os.environ["api_key"],
 #                            keys.api_secret, 
 #                            keys.access_token, 
 #                            keys.access_token_secret)
+
 api = tweepy.API(auth)
 
 currentDate = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -40,13 +45,13 @@ querystring = {"page":"1"}
 
 headers = {
 	"X-RapidAPI-Key": os.environ["rapid_api_key"],
+    # "X-RapidAPI-Key": keys.rapid_api_key,
 	"X-RapidAPI-Host": "sportscore1.p.rapidapi.com"
 }
 
 response = requests.get(url, headers=headers, params=querystring)
 
 matches = response.json()["data"]
-
 numberOfTweets = 0
 
 for match in matches:
@@ -59,8 +64,15 @@ for match in matches:
         round = match["round_info"]["name"]
 
         if(match["winner_code"] == 1):
-            winner = match["home_team"]["name_translations"]["pt"]
-            loser =  match["away_team"]["name_translations"]["pt"]
+            try:
+                winner = match["home_team"]["name_translations"]["pt"]
+            except:
+                winner = match["home_team"]["name_full"]
+            try:
+                loser =  match["away_team"]["name_translations"]["pt"]
+            except:
+                loser = match["away_team"]['name_full']
+                
             for key in match["home_score"]:
                 if len(key) == 8:
                     final_score += (str(match["home_score"][key])+"-"+str(match["away_score"][key]))
@@ -70,8 +82,15 @@ for match in matches:
                         final_score += ("("+str(match["away_score"][key+"_tie_break"])+"-"+str(match["home_score"][key+"_tie_break"])+")")
                     final_score += ", "
         else:
-            winner = match["away_team"]["name_translations"]["pt"]
-            loser = match["home_team"]["name_translations"]["pt"]
+            try:
+                winner = match["away_team"]["name_translations"]["pt"]
+            except:
+                winner = match["away_team"]["name_full"]
+            try:
+                loser = match["home_team"]["name_translations"]["pt"]
+            except:
+                loser = match["home_team"]["name_full"]
+
             for key in match["away_score"]:
                 if len(key)==8:
                     final_score += (str(match["away_score"][key])+"-"+str(match["home_score"][key]))
@@ -88,13 +107,14 @@ for match in matches:
         # print(winner + " vs " + loser)
         # print(final_score + "\n\n")
         with open('temp.txt', 'w') as f:
-            f.write(tournament_name + "\n\n" +round + "\n"+ winner + " def. " + loser + " "+ final_score + "\n\n\n\n" + hashtags)
+            f.write(tournament_name + "\n\n" +round + "\n\n"+ winner + " def. " + loser + " "+ final_score + "\n\n\n\n" + hashtags)
 
         with open('temp.txt','r') as f:
             client.create_tweet(text=f.read())
-                #print(f.read())
-
-            # print(win + " defeats " + lost + " "+ final_score)
+            # print(f.read())
+        numberOfTweets += 1
+        # print(numberOfTweets)
+        # print(winner + " defeats " + loser + " "+ final_score)
         # numberOfTweets += 1
         # if(numberOfTweets > 49):
         #     break
