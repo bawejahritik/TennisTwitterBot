@@ -42,12 +42,13 @@ api = tweepy.API(auth)
 currentDate = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/" + currentDate
+# url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/2023-07-16"
 
 querystring = {"page":"1"}
 
 headers = {
 	"X-RapidAPI-Key": os.environ["rapid_api_key"],
-    # "X-RapidAPI-Key": keys.rapid_api_key,
+    "X-RapidAPI-Key": keys.rapid_api_key,
 	"X-RapidAPI-Host": "sportscore1.p.rapidapi.com"
 }
 
@@ -62,12 +63,14 @@ for match in matches:
         loser = ""
         final_score = ""
         flag = False
-
+        # print(match)
         tournament_name = match["season"]["name"]
-        round = match["round_info"]["name"]
-        if("Double" in tournament_name):
+        qualify = match["challenge"]["name"]
+        
+        if("Double" in tournament_name or "Qualifying" in qualify):
             flag = True
         elif(match["winner_code"] == 1):
+            round = match["round_info"]["name"]
             try:
                 winner = match["home_team"]["name_translations"]["pt"]
             except:
@@ -90,6 +93,7 @@ for match in matches:
                         final_score += ("("+str(match["away_score"][key+"_tie_break"])+"-"+str(match["home_score"][key+"_tie_break"])+")")
                     final_score += ", "
         else:
+            round = match["round_info"]["name"]
             try:
                 winner = match["away_team"]["name_translations"]["pt"]
             except:
