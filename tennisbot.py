@@ -48,7 +48,7 @@ querystring = {"page":"1"}
 
 headers = {
 	"X-RapidAPI-Key": os.environ["rapid_api_key"],
-    "X-RapidAPI-Key": keys.rapid_api_key,
+    # "X-RapidAPI-Key": keys.rapid_api_key,
 	"X-RapidAPI-Host": "sportscore1.p.rapidapi.com"
 }
 
