@@ -63,13 +63,14 @@ for match in matches:
         loser = ""
         final_score = ""
         flag = False
-        # print(match)
+        
         tournament_name = match["season"]["name"]
         qualify = match["challenge"]["name"]
         
         if("Double" in tournament_name or "Qualifying" in qualify):
             flag = True
         elif(match["winner_code"] == 1):
+            # print(match)
             round = match["round_info"]["name"]
             try:
                 winner = match["home_team"]["name_translations"]["pt"]
@@ -93,6 +94,7 @@ for match in matches:
                         final_score += ("("+str(match["away_score"][key+"_tie_break"])+"-"+str(match["home_score"][key+"_tie_break"])+")")
                     final_score += ", "
         else:
+            # print(match)
             round = match["round_info"]["name"]
             try:
                 winner = match["away_team"]["name_translations"]["pt"]
@@ -122,6 +124,22 @@ for match in matches:
             # print(winner + " vs " + loser)
             # print(match["challenge"]["name"])
             # print(final_score + "\n\n")
+            media_ids = []
+
+            if(match["home_team"]["has_logo"]):
+                url = match["home_team"]["logo"]
+                response = requests.get(url)
+                with open("home_team.jpg", "wb") as f:
+                    f.write(response.content)
+                media_ids.append(api.media_upload("home_team.jpg").media_id)
+                    
+            if(match["away_team"]["has_logo"]):
+                url = match["away_team"]["logo"]
+                response = requests.get(url)
+                with open("away_team.jpg", "wb") as f:
+                    f.write(response.content)
+                media_ids.append(api.media_upload("away_team.jpg").media_id)
+                
 
             hashtags = "#" + remove(winner) + " #" + remove(loser) + " #" + remove(tournament_name) + " #" + remove(match["challenge"]["name"]) + " #Tennis #ATP #WTA #TennisScoreFeed"
 
@@ -129,7 +147,7 @@ for match in matches:
                 f.write(tournament_name + "\n\n" +round + "\n\n"+ winner + " def. " + loser + " "+ final_score + "\n\n\n\n" + hashtags)
 
             with open('temp.txt','r') as f:
-                client.create_tweet(text=f.read())
+                client.create_tweet(text=f.read(), media_ids=media_ids)
                 # print(f.read())
             numberOfTweets += 1
             # print(numberOfTweets)
