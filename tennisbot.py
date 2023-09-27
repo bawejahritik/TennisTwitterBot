@@ -1,8 +1,13 @@
+import tweepy
+# import keys
+
+import time
+
 import requests
 from datetime import datetime, timezone
-import tweepy
 import os
-# import keys
+
+
 
 def remove(string):
     if(len(string)==0):
@@ -147,6 +152,7 @@ for match in matches:
                 f.write(tournament_name + "\n\n" +round + "\n\n"+ winner + " def. " + loser + " "+ final_score + "\n\n\n\n" + hashtags)
 
             with open('temp.txt','r') as f:
+                time.sleep(1)
                 client.create_tweet(text=f.read(), media_ids=media_ids)
                 # print(f.read())
             numberOfTweets += 1
