@@ -1,5 +1,5 @@
 import tweepy
-import keys
+# import keys
 
 import time
 
@@ -19,28 +19,28 @@ def remove(string):
     string = string.replace("'", "")
     return string
 
-# client = tweepy.Client(bearer_token=os.environ["bearer_token"],
-#                        consumer_key=os.environ["api_key"],
-#                        consumer_secret=os.environ["api_key_secret"],
-#                        access_token=os.environ["access_token"],
-#                        access_token_secret=os.environ["access_token_secret"],
-#                        wait_on_rate_limit=True)
+client = tweepy.Client(bearer_token=os.environ["bearer_token"],
+                       consumer_key=os.environ["api_key"],
+                       consumer_secret=os.environ["api_key_secret"],
+                       access_token=os.environ["access_token"],
+                       access_token_secret=os.environ["access_token_secret"],
+                       wait_on_rate_limit=True)
 
-client = tweepy.Client(bearer_token=keys.bearer_token,
-                       consumer_key=keys.api_key,
-                       consumer_secret=keys.api_secret,
-                       access_token=keys.access_token,
-                       access_token_secret=keys.access_token_secret)
+# client = tweepy.Client(bearer_token=keys.bearer_token,
+#                        consumer_key=keys.api_key,
+#                        consumer_secret=keys.api_secret,
+#                        access_token=keys.access_token,
+#                        access_token_secret=keys.access_token_secret)
 
-# auth = tweepy.OAuthHandler(os.environ["api_key"], 
-#                            os.environ["api_key_secret"], 
-#                            os.environ["access_token"], 
-#                            os.environ["access_token_secret"])
+auth = tweepy.OAuthHandler(os.environ["api_key"], 
+                           os.environ["api_key_secret"], 
+                           os.environ["access_token"], 
+                           os.environ["access_token_secret"])
 
-auth = tweepy.OAuthHandler(keys.api_key, 
-                           keys.api_secret, 
-                           keys.access_token, 
-                           keys.access_token_secret)
+# auth = tweepy.OAuthHandler(keys.api_key, 
+#                            keys.api_secret, 
+#                            keys.access_token, 
+#                            keys.access_token_secret)
 
 api = tweepy.API(auth)
 
@@ -146,16 +146,18 @@ for match in matches:
                 media_ids.append(api.media_upload("away_team.jpg").media_id)
                 
 
-            hashtags = "#" + remove(winner) + " #" + remove(loser) + " #" + remove(tournament_name) + " #" + remove(match["challenge"]["name"]) + " #Tennis #ATP #WTA #TennisScoreFeed #TennisFans #TennisPlayers #TennisCommunity #TennisMatchday"
+            hashtags = "#" + remove(winner) + " #" + remove(loser) + " #" + remove(tournament_name) + " #" + remove(match["challenge"]["name"]) + " #Tennis #ATP #WTA #TennisScoreFeed"
 
-            with open('temp.txt', 'w') as f:
+            with open('temp.txt', 'w', encoding='utf-8') as f:
                 f.write("🎾 " + tournament_name + " - " + round + " 🏆\n\n"+ winner + " def. " + loser + " "+ final_score + "\n\nStay tuned for more exciting tennis updates! 📊\n\n" + hashtags)
 
-            with open('temp.txt','r') as f:
-                time.sleep(1)
-                client.create_tweet(text=f.read(), media_ids=media_ids)
-                # print(f.read())
-            numberOfTweets += 1
+            try:
+                with open('temp.txt','r', encoding='utf-8') as f:
+                    time.sleep(1)
+                    client.create_tweet(text=f.read(), media_ids=media_ids)
+                numberOfTweets += 1
+            except:
+                pass
             # print(numberOfTweets)
             # print(winner + " defeats " + loser + " "+ final_score)
             # numberOfTweets += 1
