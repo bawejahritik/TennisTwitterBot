@@ -1,7 +1,5 @@
 import tweepy
-# import keys
-
-import time
+import keys
 
 import requests
 from datetime import datetime, timezone
@@ -19,12 +17,12 @@ def remove(string):
     string = string.replace("'", "")
     return string
 
-client = tweepy.Client(bearer_token=os.environ["bearer_token"],
-                       consumer_key=os.environ["api_key"],
-                       consumer_secret=os.environ["api_key_secret"],
-                       access_token=os.environ["access_token"],
-                       access_token_secret=os.environ["access_token_secret"],
-                       )
+# client = tweepy.Client(bearer_token=os.environ["bearer_token"],
+#                        consumer_key=os.environ["api_key"],
+#                        consumer_secret=os.environ["api_key_secret"],
+#                        access_token=os.environ["access_token"],
+#                        access_token_secret=os.environ["access_token_secret"],
+#                        )
 
 # client = tweepy.Client(bearer_token=keys.bearer_token,
 #                        consumer_key=keys.api_key,
@@ -32,17 +30,17 @@ client = tweepy.Client(bearer_token=os.environ["bearer_token"],
 #                        access_token=keys.access_token,
 #                        access_token_secret=keys.access_token_secret)
 
-auth = tweepy.OAuthHandler(os.environ["api_key"], 
-                           os.environ["api_key_secret"], 
-                           os.environ["access_token"], 
-                           os.environ["access_token_secret"])
+# auth = tweepy.OAuthHandler(os.environ["api_key"], 
+#                            os.environ["api_key_secret"], 
+#                            os.environ["access_token"], 
+#                            os.environ["access_token_secret"])
 
 # auth = tweepy.OAuthHandler(keys.api_key, 
 #                            keys.api_secret, 
 #                            keys.access_token, 
 #                            keys.access_token_secret)
 
-api = tweepy.API(auth)
+# api = tweepy.API(auth)
 
 currentDate = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
@@ -52,8 +50,8 @@ url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/" + currentDate
 querystring = {"page":"1"}
 
 headers = {
-	"X-RapidAPI-Key": os.environ["rapid_api_key"],
-    # "X-RapidAPI-Key": keys.rapid_api_key,
+	# "X-RapidAPI-Key": os.environ["rapid_api_key"],
+    "X-RapidAPI-Key": keys.rapid_api_key,
 	"X-RapidAPI-Host": "sportscore1.p.rapidapi.com"
 }
 
@@ -67,8 +65,9 @@ matchIds = set()
 with open('matchIds.txt', 'r') as f:
     content = f.readlines()
     for i, matchId in enumerate(content):
-        matchIds.add(matchId)
+        matchIds.add(matchId[:-1])
 
+print(matchIds)
 try:
     for match in matches:
         if match["status"] == "finished" and (match["section"]["name"] == "ATP" or match["section"]["name"] == "WTA") and str(match['id']) not in matchIds:
@@ -76,7 +75,7 @@ try:
             loser = ""
             final_score = ""
             flag = False
-            
+            print(match["id"])
             tournament_name = match["season"]["name"]
             qualify = match["challenge"]["name"]
             with open('matchIds.txt', 'a') as f:
@@ -140,14 +139,14 @@ try:
                     response = requests.get(url)
                     with open("home_team.jpg", "wb") as f:
                         f.write(response.content)
-                    media_ids.append(api.media_upload("home_team.jpg").media_id)
+                    # media_ids.append(api.media_upload("home_team.jpg").media_id)
                         
                 if(match["away_team"]["has_logo"]):
                     url = match["away_team"]["logo"]
                     response = requests.get(url)
                     with open("away_team.jpg", "wb") as f:
                         f.write(response.content)
-                    media_ids.append(api.media_upload("away_team.jpg").media_id)
+                    # media_ids.append(api.media_upload("away_team.jpg").media_id)
                     
 
                 hashtags = "#" + remove(winner) + " #" + remove(loser) + " #" + remove(tournament_name) + " #" + remove(match["challenge"]["name"]) + " #Tennis #ATP #WTA #TennisScoreFeed"
@@ -155,11 +154,11 @@ try:
                 with open('temp.txt', 'w', encoding='utf-8') as f:
                     f.write("🎾 " + tournament_name + " - " + round + " 🏆\n\n"+ winner + " def. " + loser + " "+ final_score + "\n\nStay tuned for more exciting tennis updates! 📊\n\n" + hashtags)
 
-                try:
-                    with open('temp.txt','r', encoding='utf-8') as f:
-                        client.create_tweet(text=f.read(), media_ids=media_ids)
-                    numberOfTweets += 1
-                except Exception as e:
-                    print(f"An error occurred: {e}")
+                # try:
+                #     with open('temp.txt','r', encoding='utf-8') as f:
+                #         client.create_tweet(text=f.read(), media_ids=media_ids)
+                #     numberOfTweets += 1
+                # except Exception as e:
+                #     print(f"An error occurred: {e}")
 except Exception as e:
         print(f"An error occurred: {e}")
