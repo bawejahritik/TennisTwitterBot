@@ -31,6 +31,8 @@ jobs:
           rapid_api_key: ${{secrets.RAPIDAPIKEY}}
         run: |
           python tennisbot.py
+          git config user.email "bawejahritik@gmail.com"
+          git config user.name "Hritik Baweja"
           git add .
           git commit -m "update matchIds"
           git push
