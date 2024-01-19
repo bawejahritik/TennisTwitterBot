@@ -2,7 +2,7 @@ import feedparser
 import tweepy
 import os
 import google.generativeai as palm
-import keys
+# import keys
 
 client = tweepy.Client(bearer_token=os.environ["bearer_token"],
                        consumer_key=os.environ["api_key"],
