@@ -29,4 +29,8 @@ jobs:
           access_token: ${{secrets.ACCESS_TOKEN}}
           access_token_secret: ${{secrets.ACCESS_TOKEN_SECRET}}
           rapid_api_key: ${{secrets.RAPIDAPIKEY}}
-        run: python tennisbot.py
+        run: 
+          python tennisbot.py
+          git add .
+          git commit -m "update matchIds"
+          git push
