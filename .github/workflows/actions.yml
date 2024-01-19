@@ -2,7 +2,7 @@ name: run main.py
 
 on:
   schedule:
-    - cron: '0 23 * * *' # At 00:00 on Monday
+    - cron: '10 * * * *' # At 00:00 on Monday
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
           access_token: ${{secrets.ACCESS_TOKEN}}
           access_token_secret: ${{secrets.ACCESS_TOKEN_SECRET}}
           rapid_api_key: ${{secrets.RAPIDAPIKEY}}
-        run: 
+        run: |
           python tennisbot.py
           git add .
           git commit -m "update matchIds"
