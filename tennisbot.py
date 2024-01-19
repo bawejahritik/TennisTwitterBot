@@ -24,7 +24,7 @@ client = tweepy.Client(bearer_token=os.environ["bearer_token"],
                        consumer_secret=os.environ["api_key_secret"],
                        access_token=os.environ["access_token"],
                        access_token_secret=os.environ["access_token_secret"],
-                       wait_on_rate_limit=True)
+                       )
 
 # client = tweepy.Client(bearer_token=keys.bearer_token,
 #                        consumer_key=keys.api_key,
@@ -157,7 +157,6 @@ try:
 
                 try:
                     with open('temp.txt','r', encoding='utf-8') as f:
-                        time.sleep(0.1)
                         client.create_tweet(text=f.read(), media_ids=media_ids)
                     numberOfTweets += 1
                 except Exception as e:
