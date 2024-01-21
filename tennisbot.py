@@ -62,7 +62,7 @@ numberOfTweets = 0
 
 matchIds = set()
 
-with open('matchIds.txt', 'r') as f:
+with open(str(currentDate)+'.txt', 'r') as f:
     content = f.readlines()
     for i, matchId in enumerate(content):
         matchIds.add(matchId[:-1])
@@ -74,10 +74,9 @@ try:
             loser = ""
             final_score = ""
             flag = False
-            print(match["id"])
             tournament_name = match["season"]["name"]
             qualify = match["challenge"]["name"]
-            with open('matchIds.txt', 'a') as f:
+            with open(str(currentDate) + '.txt', 'a') as f:
                 f.write(str(match['id']) + '\n')
             
             matchIds.add(match['id'])
