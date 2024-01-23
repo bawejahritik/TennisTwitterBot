@@ -154,7 +154,11 @@ try:
 
                 try:
                     with open('temp.txt','r', encoding='utf-8') as f:
-                        client.create_tweet(text=f.read(), media_ids=media_ids)
+                        text = f.read()
+                        if len(text) < 280:
+                            client.create_tweet(text=text, media_ids=media_ids)
+                        else:
+                            client.create_tweet(text=text[:280], media_ids=media_ids)
                     numberOfTweets += 1
                 except Exception as e:
                     print(f"An error occurred: {e}")
