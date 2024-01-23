@@ -62,6 +62,10 @@ numberOfTweets = 0
 
 matchIds = set()
 
+if not os.path.isFile(str(currentDate)+'.txt'):
+    f = open(str(currentDate)+".txt", "x")
+    f.close()
+
 with open(str(currentDate)+'.txt', 'r') as f:
     content = f.readlines()
     for i, matchId in enumerate(content):
