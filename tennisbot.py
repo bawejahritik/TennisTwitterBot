@@ -45,7 +45,7 @@ api = tweepy.API(auth)
 currentDate = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/" + currentDate
-# url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/2024-01-16"
+# url = "https://sportscore1.p.rapidapi.com/sports/2/events/date/2024-01-22"
 
 querystring = {"page":"1"}
 
@@ -62,7 +62,7 @@ numberOfTweets = 0
 
 matchIds = set()
 
-if not os.path.isFile(str(currentDate)+'.txt'):
+if not os.path.isfile(str(currentDate)+'.txt'):
     f = open(str(currentDate)+".txt", "x")
     f.close()
 
@@ -159,10 +159,10 @@ try:
                 try:
                     with open('temp.txt','r', encoding='utf-8') as f:
                         text = f.read()
-                        if len(text) < 280:
+                        if len(text) < 270:
                             client.create_tweet(text=text, media_ids=media_ids)
                         else:
-                            client.create_tweet(text=text[:280], media_ids=media_ids)
+                            client.create_tweet(text=text[:270], media_ids=media_ids)
                     numberOfTweets += 1
                 except Exception as e:
                     print(f"An error occurred: {e}")
